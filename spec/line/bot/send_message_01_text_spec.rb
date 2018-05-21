@@ -39,16 +39,15 @@ describe Line::Bot::Client do
     end
 
     reply_token = 'reply_token'
-    message = {
-      type: 'text',
-      text: 'Hello, world'
-    }
+    message = MessageReply.new(
+      'Hello, world'
+    )
     response = client.reply_message(reply_token, message)
 
     expected = {
       replyToken: reply_token,
       messages: [
-        message
+        message.reply
       ]
     }.to_json
     expect(response.body).to eq(expected)
@@ -63,16 +62,15 @@ describe Line::Bot::Client do
     end
 
     user_ids = ['user1', 'user2']
-    message = {
-      type: 'text',
-      text: 'Hello, world'
-    }
+    message = MessageReply.new(
+      'Hello, world'
+    )
     response = client.multicast(user_ids, message)
 
     expected = {
       to: user_ids,
       messages: [
-        message
+        message.reply
       ]
     }.to_json
     expect(response.body).to eq(expected)

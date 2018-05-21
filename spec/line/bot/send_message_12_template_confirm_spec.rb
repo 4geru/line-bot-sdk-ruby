@@ -55,32 +55,23 @@ describe Line::Bot::Client do
     end
 
     reply_token = 'reply_token'
-    message = {
-      type: 'template',
-      altText: 'this is an template message',
-      template: {
-        type: 'confirm',
-        text: 'test',
-        actions: [
-          {
-            type: 'message',
-            label: 'yes',
-            text: 'yes',
-          },
-          {
-            type: 'message',
-            label: 'no',
-            text: 'no',
-          },
-        ],
-      }
-    }
+
+    message = TemplateReply.new(
+      'this is an template message',
+      ConfirmTemplate.new(
+        'test',
+        [
+          MessageAction.new('yes', 'yes'),
+          MessageAction.new('no', 'no'),
+        ]
+      )
+    )
     response = client.reply_message(reply_token, message)
 
     expected = {
       replyToken: reply_token,
       messages: [
-        message
+        message.reply
       ]
     }.to_json
     expect(response.body).to eq(expected)
@@ -95,32 +86,23 @@ describe Line::Bot::Client do
     end
 
     user_ids = ['user1', 'user2']
-    message = {
-      type: 'template',
-      altText: 'this is an template message',
-      template: {
-        type: 'confirm',
-        text: 'test',
-        actions: [
-          {
-            type: 'message',
-            label: 'yes',
-            text: 'yes',
-          },
-          {
-            type: 'message',
-            label: 'no',
-            text: 'no',
-          },
-        ],
-      }
-    }
+    message = TemplateReply.new(
+      'this is an template message',
+      ConfirmTemplate.new(
+        'test',
+        [
+          MessageAction.new('yes', 'yes'),
+          MessageAction.new('no', 'no'),
+        ]
+      )
+    )
+
     response = client.multicast(user_ids, message)
 
     expected = {
       to: user_ids,
       messages: [
-        message
+        message.reply
       ]
     }.to_json
     expect(response.body).to eq(expected)

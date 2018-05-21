@@ -88,10 +88,11 @@ module Line
       # @param messages [Hash or Array]
       #
       # @return [Net::HTTPResponse]
-      def reply_message(token, messages)
+      def reply_message(token, message_classes)
         raise Line::Bot::API::InvalidCredentialsError, 'Invalidates credentials' unless credentials?
-
-        messages = [messages] if messages.is_a?(Hash)
+        puts 'reply_message'
+        puts message_classes
+        messages = [message_classes].flatten.map{|message_class| message_class.reply }
 
         request = Request.new do |config|
           config.httpclient     = httpclient
@@ -111,11 +112,11 @@ module Line
       # @param messages [Hash or Array]
       #
       # @return [Net::HTTPResponse]
-      def multicast(to, messages)
+      def multicast(to, message_classes)
         raise Line::Bot::API::InvalidCredentialsError, 'Invalidates credentials' unless credentials?
 
         to = [to] if to.is_a?(String)
-        messages = [messages] if messages.is_a?(Hash)
+        messages = [message_classes].flatten.map{|message_class| message_class.reply }
 
         request = Request.new do |config|
           config.httpclient     = httpclient

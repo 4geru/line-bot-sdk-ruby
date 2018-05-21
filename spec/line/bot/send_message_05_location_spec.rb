@@ -42,19 +42,18 @@ describe Line::Bot::Client do
     end
 
     reply_token = 'reply_token'
-    message = {
-      type: 'location',
-      title: 'LINE Corporation.',
-      address: 'Hikarie  Shibuya-ku Tokyo 151-0002',
-      latitude: 35.61823286112982,
-      longitude: 139.72824096679688,
-    }
+    message = LocationReply.new(
+      'LINE Corporation.',
+      'Hikarie  Shibuya-ku Tokyo 151-0002',
+      35.61823286112982,
+      139.72824096679688,
+    )
     response = client.reply_message(reply_token, message)
 
     expected = {
       replyToken: reply_token,
       messages: [
-        message
+        message.reply
       ]
     }.to_json
     expect(response.body).to eq(expected)
@@ -69,19 +68,18 @@ describe Line::Bot::Client do
     end
 
     user_ids = ['user1', 'user2']
-    message = {
-      type: 'location',
-      title: 'LINE Corporation.',
-      address: 'Hikarie  Shibuya-ku Tokyo 151-0002',
-      latitude: 35.61823286112982,
-      longitude: 139.72824096679688,
-    }
+    message = LocationReply.new(
+      'LINE Corporation.',
+      'Hikarie  Shibuya-ku Tokyo 151-0002',
+      35.61823286112982,
+      139.72824096679688,
+    )
     response = client.multicast(user_ids, message)
 
     expected = {
       to: user_ids,
       messages: [
-        message
+        message.reply
       ]
     }.to_json
     expect(response.body).to eq(expected)

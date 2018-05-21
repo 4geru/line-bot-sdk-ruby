@@ -57,34 +57,25 @@ describe Line::Bot::Client do
     end
 
     reply_token = 'reply_token'
-    message = {
-      type: 'template',
-      altText: 'this is an template message',
-      template: {
-        type: 'buttons',
-        title: 'event schedule',
-        text: 'select date',
-        actions: [
-          {
-            type: 'datetimepicker',
-            label: 'ok',
-            data: 'datetimepicker=ok',
-            mode: 'date'
-          },
-          {
-            type: 'postback',
-            label: 'no',
-            data: 'datetimepicker=no',
-          },
-        ]
-      }
-    }
+    message = TemplateReply.new(
+      'this is an template message',
+      ButtonTemplate.new(
+        'select date',
+        [
+          DateTimePickerAction.new('ok', {datetimepicker: 'ok'}, 'date'),
+          PostbackAction.new('no', {datetimepicker: 'no'}),
+        ],
+        {
+          title: 'event schedule'
+        }
+      )
+    )
     response = client.reply_message(reply_token, message)
 
     expected = {
       replyToken: reply_token,
       messages: [
-        message
+        message.reply
       ]
     }.to_json
     expect(response.body).to eq(expected)
@@ -99,34 +90,25 @@ describe Line::Bot::Client do
     end
 
     user_ids = ['user1', 'user2']
-    message = {
-      type: 'template',
-      altText: 'this is an template message',
-      template: {
-        type: 'buttons',
-        title: 'event schedule',
-        text: 'select date',
-        actions: [
-          {
-            type: 'datetimepicker',
-            label: 'ok',
-            data: 'datetimepicker=ok',
-            mode: 'date'
-          },
-          {
-            type: 'postback',
-            label: 'no',
-            data: 'datetimepicker=no',
-          },
-        ]
-      }
-    }
+    message = TemplateReply.new(
+      'this is an template message',
+      ButtonTemplate.new(
+        'select date',
+        [
+          DateTimePickerAction.new('ok', {datetimepicker: 'ok'}, 'date'),
+          PostbackAction.new('no', {datetimepicker: 'no'}),
+        ],
+        {
+          title: 'event schedule'
+        }
+      )
+    )
     response = client.multicast(user_ids, message)
 
     expected = {
       to: user_ids,
       messages: [
-        message
+        message.reply
       ]
     }.to_json
     expect(response.body).to eq(expected)

@@ -40,17 +40,16 @@ describe Line::Bot::Client do
     end
 
     reply_token = 'reply_token'
-    message = {
-      type: 'audio',
-      originalContentUrl: 'https://example.com/audio.mp3',
-      duration: 120000
-    }
+    message = AudioReply.new(
+      'https://example.com/audio.mp3',
+      120000
+    )
     response = client.reply_message(reply_token, message)
 
     expected = {
       replyToken: reply_token,
       messages: [
-        message
+        message.reply
       ]
     }.to_json
     expect(response.body).to eq(expected)
@@ -65,17 +64,16 @@ describe Line::Bot::Client do
     end
 
     user_ids = ['user1', 'user2']
-    message = {
-      type: 'audio',
-      originalContentUrl: 'https://example.com/audio.mp3',
-      duration: 120000
-    }
+    message = AudioReply.new(
+      'https://example.com/audio.mp3',
+      120000
+    )
     response = client.multicast(user_ids, message)
 
     expected = {
       to: user_ids,
       messages: [
-        message
+        message.reply
       ]
     }.to_json
     expect(response.body).to eq(expected)

@@ -78,55 +78,34 @@ describe Line::Bot::Client do
     end
 
     reply_token = 'reply_token'
-    message = {
-      type: 'template',
-      altText: 'this is an template message',
-      template: {
-        type: 'carousel',
-        columns: [
-          {
-            thumbnailImageUrl: 'https://example.com/image1.jpg',
-            title: 'example',
-            text: 'test',
-            actions: [
-              {
-                type: 'message',
-                label: 'keep',
-                text: 'keep'
-              },
-              {
-                type: 'uri',
-                label: 'site',
-                uri: 'https://example.com/page1'
-              },
-            ],
-          },
-          {
-            thumbnailImageUrl: 'https://example.com/image2.jpg',
-            title: 'example',
-            text: 'test',
-            actions: [
-              {
-                type: 'message',
-                label: 'keep',
-                text: 'keep'
-              },
-              {
-                type: 'uri',
-                label: 'site',
-                uri: 'https://example.com/page2'
-              },
-            ],
-          },
-        ],
-      }
-    }
+
+    message = TemplateReply.new(
+      'this is an template message',
+      CarouselTemplate.new([
+        CarouselObject.new(
+          'test',
+          [
+            MessageAction.new('keep', 'keep'),
+            UriAction.new('site', 'https://example.com/page1')
+          ]
+        ),
+        CarouselObject.new(
+          'test',
+          [
+            MessageAction.new('keep', 'keep'),
+            UriAction.new('site', 'https://example.com/page1')
+          ]
+        )
+      ])
+    )
+
+
     response = client.reply_message(reply_token, message)
 
     expected = {
       replyToken: reply_token,
       messages: [
-        message
+        message.reply
       ]
     }.to_json
     expect(response.body).to eq(expected)
@@ -141,55 +120,32 @@ describe Line::Bot::Client do
     end
 
     user_ids = ['user1', 'user2']
-    message = {
-      type: 'template',
-      altText: 'this is an template message',
-      template: {
-        type: 'carousel',
-        columns: [
-          {
-            thumbnailImageUrl: 'https://example.com/image1.jpg',
-            title: 'example',
-            text: 'test',
-            actions: [
-              {
-                type: 'message',
-                label: 'keep',
-                text: 'keep'
-              },
-              {
-                type: 'uri',
-                label: 'site',
-                uri: 'https://example.com/page1'
-              },
-            ],
-          },
-          {
-            thumbnailImageUrl: 'https://example.com/image2.jpg',
-            title: 'example',
-            text: 'test',
-            actions: [
-              {
-                type: 'message',
-                label: 'keep',
-                text: 'keep'
-              },
-              {
-                type: 'uri',
-                label: 'site',
-                uri: 'https://example.com/page2'
-              },
-            ],
-          },
-        ],
-      }
-    }
+    message = TemplateReply.new(
+      'this is an template message',
+      CarouselTemplate.new([
+        CarouselObject.new(
+          'test',
+          [
+            MessageAction.new('keep', 'keep'),
+            UriAction.new('site', 'https://example.com/page1')
+          ]
+        ),
+        CarouselObject.new(
+          'test',
+          [
+            MessageAction.new('keep', 'keep'),
+            UriAction.new('site', 'https://example.com/page1')
+          ]
+        )
+      ])
+    )
+
     response = client.multicast(user_ids, message)
 
     expected = {
       to: user_ids,
       messages: [
-        message
+        message.reply
       ]
     }.to_json
     expect(response.body).to eq(expected)

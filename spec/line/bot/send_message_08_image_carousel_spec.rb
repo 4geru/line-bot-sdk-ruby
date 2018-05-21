@@ -68,45 +68,27 @@ describe Line::Bot::Client do
     end
 
     reply_token = 'reply_token'
-    message = {
-      type: 'template',
-      altText: 'this is a image carousel template',
-      template: {
-        type: 'image_carousel',
-        columns: [
-          {
-            imageUrl: 'https://example.com/bot/images/item1.jpg',
-            action: {
-              type: 'postback',
-              label: 'Buy',
-              data: 'action=buy&itemid=111'
-            }
-          },
-          {
-            imageUrl: 'https://example.com/bot/images/item2.jpg',
-            action: {
-              type: 'message',
-              label: 'Yes',
-              text: 'yes'
-            }
-          },
-          {
-            imageUrl: 'https://example.com/bot/images/item3.jpg',
-            action: {
-              type: 'uri',
-              label: 'View detail',
-              uri: 'http://example.com/page/222'
-            }
-          }
-        ]
-      }
-    }
+    message = TemplateReply.new(
+      'this is a image carousel template',
+      ImageCarouselTemplate.new([
+        ImageCarouselObject.new('https://example.com/bot/images/item1.jpg',
+          [ PostbackAction.new('buy', {action: 'buy', itemId: 111}) ]),
+        ImageCarouselObject.new(
+          'https://example.com/bot/images/item2.jpg',
+          [ MessageAction.new('Yes', 'yes') ]
+        ),
+        ImageCarouselObject.new(
+          'https://example.com/bot/images/item3.jpg',
+          [ UriAction.new('View detail', 'http://example.com/page/222') ]
+        )
+      ])
+    )
     response = client.reply_message(reply_token, message)
 
     expected = {
       replyToken: reply_token,
       messages: [
-          message
+          message.reply
       ]
     }.to_json
     expect(response.body).to eq(expected)
@@ -121,45 +103,27 @@ describe Line::Bot::Client do
     end
 
     user_ids = %w[user1 user2]
-    message = {
-      type: 'template',
-      altText: 'this is a image carousel template',
-      template: {
-        type: 'image_carousel',
-        columns: [
-          {
-            imageUrl: 'https://example.com/bot/images/item1.jpg',
-            action: {
-              type: 'postback',
-              label: 'Buy',
-              data: 'action=buy&itemid=111'
-            }
-          },
-          {
-            imageUrl: 'https://example.com/bot/images/item2.jpg',
-            action: {
-              type: 'message',
-              label: 'Yes',
-              text: 'yes'
-            }
-          },
-          {
-            imageUrl: 'https://example.com/bot/images/item3.jpg',
-            action: {
-              type: 'uri',
-              label: 'View detail',
-              uri: 'http://example.com/page/222'
-            }
-          }
-        ]
-      }
-    }
+    message = TemplateReply.new(
+      'this is a image carousel template',
+      ImageCarouselTemplate.new([
+        ImageCarouselObject.new('https://example.com/bot/images/item1.jpg',
+          [ PostbackAction.new('buy', {action: 'buy', itemId: 111}) ]),
+        ImageCarouselObject.new(
+          'https://example.com/bot/images/item2.jpg',
+          [ MessageAction.new('Yes', 'yes') ]
+        ),
+        ImageCarouselObject.new(
+          'https://example.com/bot/images/item3.jpg',
+          [ UriAction.new('View detail', 'http://example.com/page/222') ]
+        )
+      ])
+    )
     response = client.multicast(user_ids, message)
 
     expected = {
       to: user_ids,
       messages: [
-          message
+          message.reply
       ]
     }.to_json
     expect(response.body).to eq(expected)

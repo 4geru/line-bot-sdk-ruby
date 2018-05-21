@@ -1,0 +1,7 @@
+require 'line/bot/reply/action/image_area'
+require 'line/bot/reply/action/image_uri_action'
+require 'line/bot/reply/action/image_message_action'
+require 'line/bot/reply/action/postback_action'
+require 'line/bot/reply/action/message_action'
+require 'line/bot/reply/action/uri_action'
+require 'line/bot/reply/action/date_time_picker_action'

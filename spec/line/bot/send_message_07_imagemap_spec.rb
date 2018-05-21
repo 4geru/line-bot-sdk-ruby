@@ -65,44 +65,23 @@ describe Line::Bot::Client do
       config.channel_token = 'channel_token'
     end
 
-    reply_token = 'reply_token'
-    message = {
-      type: 'imagemap',
-      baseUrl: 'https://example.com/image',
-      altText: 'this is an imagemap message',
-      baseSize: {
-        width: 1040,
-        height: 1040,
-      },
-      actions: [
-        {
-          type: 'uri',
-          linkUri: 'https://github.com/line/line-bot-sdk-ruby',
-          area: {
-            x: 0,
-            y: 0,
-            width: 520,
-            height: 1040,
-          },
-        },
-        {
-          type: 'message',
-          text: 'Hello',
-          area: {
-            x: 520,
-            y: 0,
-            width: 520,
-            height: 1040,
-          },
-        },
+    reply_token = 'reply_token'    
+    message = ImageMapReply.new(
+      'https://example.com/image',
+      'this is an imagemap message',
+      1040,
+      1040,
+      [
+        ImageUriAction.new('https://github.com/line/line-bot-sdk-ruby', ImageArea.new(0,0,520,1040)),
+        ImageMessageAction.new('Hello', ImageArea.new(520,0,520,1040))
       ],
-    }
+    )
     response = client.reply_message(reply_token, message)
 
     expected = {
       replyToken: reply_token,
       messages: [
-        message
+        message.reply
       ]
     }.to_json
     expect(response.body).to eq(expected)
@@ -117,43 +96,22 @@ describe Line::Bot::Client do
     end
 
     user_ids = ['user1', 'user2']
-    message = {
-      type: 'imagemap',
-      baseUrl: 'https://example.com/image',
-      altText: 'this is an imagemap message',
-      baseSize: {
-        width: 1040,
-        height: 1040,
-      },
-      actions: [
-        {
-          type: 'uri',
-          linkUri: 'https://github.com/line/line-bot-sdk-ruby',
-          area: {
-            x: 0,
-            y: 0,
-            width: 520,
-            height: 1040,
-          },
-        },
-        {
-          type: 'message',
-          text: 'Hello',
-          area: {
-            x: 520,
-            y: 0,
-            width: 520,
-            height: 1040,
-          },
-        },
+    message = ImageMapReply.new(
+      'https://example.com/image',
+      'this is an imagemap message',
+      1040,
+      1040,
+      [
+        ImageUriAction.new('https://github.com/line/line-bot-sdk-ruby', ImageArea.new(0,0,520,1040)),
+        ImageMessageAction.new('Hello', ImageArea.new(520,0,520,1040))
       ],
-    }
+    )
     response = client.multicast(user_ids, message)
 
     expected = {
       to: user_ids,
       messages: [
-        message
+        message.reply
       ]
     }.to_json
     expect(response.body).to eq(expected)

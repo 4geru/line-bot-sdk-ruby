@@ -62,39 +62,27 @@ describe Line::Bot::Client do
     end
 
     reply_token = 'reply_token'
-    message = {
-      type: 'template',
-      altText: 'this is an template message',
-      template: {
-        type: 'buttons',
-        thumbnailImageUrl: 'https://example.com/image.jpg',
-        title: 'example',
-        text: 'test',
-        actions: [
-          {
-            type: 'message',
-            label: '1 label',
-            text: '1 text'
-          },
-          {
-            type: 'uri',
-            label: '2 label',
-            uri: 'tel:08041237177'
-          },
-          {
-            type: 'uri',
-            label: '3 label',
-            text: 'http://google.com'
-          },
-        ]
-      }
-    }
+    message = TemplateReply.new(
+      'this is a image carousel template',
+      ButtonTemplate.new(
+        'test',
+        [
+          MessageAction.new('1 label', '1 text'),
+          UriAction.new('2 label', 'tel:08041237177'),
+          UriAction.new('3 label', 'http://google.com')
+        ],
+        {
+          thumbnailImageUrl: 'https://example.com/image.jpg',
+          title: 'example'
+        }
+      )
+    )
     response = client.reply_message(reply_token, message)
 
     expected = {
       replyToken: reply_token,
       messages: [
-        message
+        message.reply
       ]
     }.to_json
     expect(response.body).to eq(expected)
@@ -109,39 +97,27 @@ describe Line::Bot::Client do
     end
 
     user_ids = ['user1', 'user2']
-    message = {
-      type: 'template',
-      altText: 'this is an template message',
-      template: {
-        type: 'buttons',
-        thumbnailImageUrl: 'https://example.com/image.jpg',
-        title: 'example',
-        text: 'test',
-        actions: [
-          {
-            type: 'message',
-            label: '1 label',
-            text: '1 text'
-          },
-          {
-            type: 'uri',
-            label: '2 label',
-            uri: 'tel:08041237177'
-          },
-          {
-            type: 'uri',
-            label: '3 label',
-            text: 'http://google.com'
-          },
-        ]
-      }
-    }
+    message = TemplateReply.new(
+      'this is a image carousel template',
+      ButtonTemplate.new(
+        'test',
+        [
+          MessageAction.new('1 label', '1 text'),
+          UriAction.new('2 label', 'tel:08041237177'),
+          UriAction.new('3 label', 'http://google.com')
+        ],
+        {
+          thumbnailImageUrl: 'https://example.com/image.jpg',
+          title: 'example'
+        }
+      )
+    )
     response = client.multicast(user_ids, message)
 
     expected = {
       to: user_ids,
       messages: [
-        message
+        message.reply
       ]
     }.to_json
     expect(response.body).to eq(expected)
